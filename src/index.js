@@ -6,6 +6,16 @@ const bodyParser = require('body-parser');
 const serveIndex = require('serve-index');
 const flatten = require('flat');
 
+const scoreKey = "browsertimeScore";
+const scoreMeasurements = [
+    {
+        name: "timings.navigationTiming.domInteractive.median",
+        maxScoreThreshold: 2000,
+        minScoreThreshold: 10000,
+        weight: 1
+    },
+];
+
 const filterBrowserTimeData = (report = {}) => {
     const { statistics = {} } = report[0];
 
@@ -36,6 +46,23 @@ const myGetData = async (item) => {
             Object.keys(data).forEach(function(data_key){
                 clear_data[data_key.replace(/[^\x00-\x7F]/g, "").replace(/\s/g,"")] = data[data_key];
             });
+
+            // Compute and insert cumulative metric score in data for DB
+            var weightSum = 0;
+            var score = 0;
+            scoreMeasurements.forEach(function(sm){
+                if (clear_data[sm.name] < sm.maxScoreThreshold) {
+                    score = score + 100 * sm.weight;
+                } else if (clear_data[sm.name] > sm.minScoreThreshold) {
+                    score = score;
+                } else {
+                    score = score + 100 * sm.weight * (sm.minScoreThreshold - clear_data[sm.name]) / (sm.minScoreThreshold - sm.maxScoreThreshold);
+                }
+                weightSum = weightSum + sm.weight;
+            });
+            score = score / weightSum;
+            clear_data[scoreKey] = score;
+
             resolve(clear_data);
         } catch (err) {
             console.log(`Failed to get data for ${url}`, err);
