@@ -1,5 +1,6 @@
 const garie_plugin = require('garie-plugin')
 const path = require('path');
+const fs = require('fs');
 const config = require('../config');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -16,20 +17,60 @@ const scoreMeasurements = [
     },
 ];
 
+const app = express();
+
 const filterBrowserTimeData = (report = {}) => {
     const { statistics = {} } = report[0];
 
     return flatten(statistics);
 };
 
+const writeHTMLFile = async (options) => {
+    const fileName = 'browsertime.html';
+    const { url } = options;
+    const { reportDir} = options;
+    const { data } = options;
+
+    const { files = {} } = data[0];
+    const { videos } = files;
+
+    console.info("WRITING HTML FILE")
+
+    var outputHTML = "";
+    app.render('templates/results.html', { videos }, function(err, html) {
+        if (err) {
+            console.error(`Could not create results HTML file: ${err}`);
+        } else {
+            outputHTML = html;
+        }
+    });
+
+    try {
+        const folders = fs.readdirSync(reportDir);
+
+        const newestFolder = folders[folders.length - 1];
+
+        fs.writeFileSync(path.join(reportDir, newestFolder, fileName), outputHTML);
+        console.info('WROTE HTML FILE TO ', path.join(reportDir, newestFolder, fileName));
+    } catch (err) {
+        console.error(`Failed to write browsertime.html file for ${url}`, err);
+    }
+};
+
 const myGetFile = async (options) => {
     options.fileName = 'browsertime.json';
     const file = await garie_plugin.utils.helpers.getNewestFile(options);
-    return filterBrowserTimeData(JSON.parse(file));
+    const jsonData = JSON.parse(file);
+
+    options.data = jsonData;
+    await writeHTMLFile(options);
+
+    return filterBrowserTimeData(jsonData);
 }
 
 const myGetData = async (item) => {
     const { url } = item.url_settings;
+
     return new Promise(async (resolve, reject) => {
         try {
             const cpuUsage = config.plugins['browsertime'].cpuUsage ? config.plugins['browsertime'].cpuUsage : 1
@@ -63,6 +104,8 @@ const myGetData = async (item) => {
             score = score / weightSum;
             clear_data[scoreKey] = score;
 
+            console.info(`Writing score: ${score}`);
+
             resolve(clear_data);
         } catch (err) {
             console.log(`Failed to get data for ${url}`, err);
@@ -75,8 +118,6 @@ const myGetData = async (item) => {
 
 console.log("Start");
 
-
-const app = express();
 app.use('/reports', express.static('reports'), serveIndex('reports', { icons: true }));
 
 const main = async () => {
