@@ -44,6 +44,7 @@ const writeHTMLFile = async (options) => {
             outputHTML = html;
         }
     });
+    console.info(outputHTML);
 
     try {
         const folders = fs.readdirSync(reportDir);
