@@ -1,6 +1,7 @@
 const garie_plugin = require('garie-plugin')
 const path = require('path');
 const fs = require('fs');
+const fsPromises = fs.promises;
 const config = require('../config');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -44,14 +45,14 @@ const writeHTMLFile = async (options) => {
             outputHTML = html;
         }
     });
-    console.info(outputHTML);
+    console.info(`output file contents: ${outputHTML}`);
 
     try {
-        const folders = fs.readdirSync(reportDir);
+        const folders = fsPromises.readdir(reportDir);
 
         const newestFolder = folders[folders.length - 1];
 
-        fs.writeFileSync(path.join(reportDir, newestFolder, fileName), outputHTML);
+        fsPromises.writeFile(path.join(reportDir, newestFolder, fileName), outputHTML);
         console.info('WROTE HTML FILE TO ', path.join(reportDir, newestFolder, fileName));
     } catch (err) {
         console.error(`Failed to write browsertime.html file for ${url}`, err);
