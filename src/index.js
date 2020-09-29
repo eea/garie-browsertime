@@ -35,7 +35,7 @@ const writeHTMLFile = async (options) => {
     const { files = {} } = data[0];
     const { videos } = files;
 
-    console.info("WRITING HTML FILE")
+    console.info("Writing HTML file")
 
     var outputHTML = "";
     app.render('templates/results.html', { videos }, function(err, html) {
