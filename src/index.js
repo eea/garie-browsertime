@@ -1,12 +1,12 @@
 const garie_plugin = require('garie-plugin')
 const path = require('path');
 const fs = require('fs');
-const fsPromises = fs.promises;
 const config = require('../config');
 const express = require('express');
 const bodyParser = require('body-parser');
 const serveIndex = require('serve-index');
 const flatten = require('flat');
+const nunjucks = require('nunjucks');
 
 const scoreKey = "browsertimeScore";
 const scoreMeasurements = [
@@ -19,6 +19,12 @@ const scoreMeasurements = [
 ];
 
 const app = express();
+
+const nunjucksEnv = nunjucks.configure(`${__dirname}/templates`, {
+    autoescape: true,
+    express: app,
+    watch: true,
+});
 
 const filterBrowserTimeData = (report = {}) => {
     const { statistics = {} } = report[0];
@@ -33,34 +39,35 @@ const writeHTMLFile = async (options) => {
     const { data } = options;
 
     const { files = {} } = data[0];
-    const { videos } = files;
+    const { video } = files;
 
-    console.info("Writing HTML file")
+    var videos = new Array();
+    video.forEach(v => {
+        videos.push(v);
+    });
 
-    var outputHTML = "";
-    app.render('templates/results.html', { videos }, function(err, html) {
+    console.log(`Rendering the HTML file with ${videos}`);
+
+    app.render('results.html', { videos: video }, function(err, html) {
         if (err) {
             console.error(`Could not create results HTML file: ${err}`);
         } else {
-            outputHTML = html;
+            console.info(`HTML is ${html}`);
+            try {
+                const folders = fs.readdirSync(reportDir);
+                const newestFolder = folders[folders.length - 1];
+                fs.writeFileSync(path.join(reportDir, newestFolder, fileName), html);
+                console.info('Wrote browsertime.html file to ', path.join(reportDir, newestFolder, fileName));
+            } catch (err) {
+                console.error(`Failed to write browsertime.html file for ${url}`, err);
+            }
         }
     });
-    console.info(`output file contents: ${outputHTML}`);
-
-    try {
-        const folders = fsPromises.readdir(reportDir);
-
-        const newestFolder = folders[folders.length - 1];
-
-        fsPromises.writeFile(path.join(reportDir, newestFolder, fileName), outputHTML);
-        console.info('WROTE HTML FILE TO ', path.join(reportDir, newestFolder, fileName));
-    } catch (err) {
-        console.error(`Failed to write browsertime.html file for ${url}`, err);
-    }
 };
 
 const myGetFile = async (options) => {
     options.fileName = 'browsertime.json';
+    console.log(`Path is: reportDir: ${options.reportDir} ; file name: ${options.fileName}`);
     const file = await garie_plugin.utils.helpers.getNewestFile(options);
     const jsonData = JSON.parse(file);
 
