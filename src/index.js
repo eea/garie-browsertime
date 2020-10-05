@@ -46,13 +46,10 @@ const writeHTMLFile = async (options) => {
         videos.push(v);
     });
 
-    console.log(`Rendering the HTML file with ${videos}`);
-
     app.render('results.html', { videos: video }, function(err, html) {
         if (err) {
             console.error(`Could not create results HTML file: ${err}`);
         } else {
-            console.info(`HTML is ${html}`);
             try {
                 const folders = fs.readdirSync(reportDir);
                 const newestFolder = folders[folders.length - 1];
