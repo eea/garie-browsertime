@@ -135,7 +135,8 @@ const main = async () => {
         report_folder_name:'browsertime-results',
         plugin_name:'browsertime',
         app_root: path.join(__dirname, '..'),
-        config:config
+        config:config,
+        onDemand: true
       });
       const cpuUsage = config.plugins['browsertime'].cpuUsage ? config.plugins['browsertime'].cpuUsage : 1
       console.log('CPUs usage percentage by each thread: ' + cpuUsage * 100 + '%')
