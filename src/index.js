@@ -18,11 +18,11 @@ const scoreMeasurements = [
     },
 ];
 
-const app = express();
+const templateApp = express();
 
 const nunjucksEnv = nunjucks.configure(`${__dirname}/templates`, {
     autoescape: true,
-    express: app,
+    express: templateApp,
     watch: true,
 });
 
@@ -46,7 +46,7 @@ const writeHTMLFile = async (options) => {
         videos.push(v);
     });
 
-    app.render('results.html', { videos: video }, function(err, html) {
+    templateApp.render('results.html', { videos: video }, function(err, html) {
         if (err) {
             console.error(`Could not create results HTML file: ${err}`);
         } else {
@@ -124,38 +124,30 @@ const myGetData = async (item) => {
 
 console.log("Start");
 
-app.use('/reports', express.static('reports'), serveIndex('reports', { icons: true }));
-
 const main = async () => {
   return new Promise(async (resolve, reject) => {
     try{
-      await garie_plugin.init({
+      const {app} = await garie_plugin.init({
         db_name:'browsertime',
         getData:myGetData,
         report_folder_name:'browsertime-results',
         plugin_name:'browsertime',
         app_root: path.join(__dirname, '..'),
         config:config,
-        onDemand: true
+        onDemand: true,
       });
-      const cpuUsage = config.plugins['browsertime'].cpuUsage ? config.plugins['browsertime'].cpuUsage : 1
-      console.log('CPUs usage percentage by each thread: ' + cpuUsage * 100 + '%')
+      const cpuUsage = config.plugins['browsertime'].cpuUsage ? config.plugins['browsertime'].cpuUsage : 1;
+      console.log('CPUs usage percentage by each thread: ' + cpuUsage * 100 + '%');
+      app.listen(3000, () => {
+        console.log('Application listening on port 3000');
+      });
     }
     catch(err){
-      reject(err);
+      console.log(err);
     }
   });
 }
 
 if (process.env.ENV !== 'test') {
-  const server = app.listen(3000, async () => {
-    console.log('Application listening on port 3000');
-    try{
-      await main();
-    }
-    catch(err){
-      console.log(err);
-      server.close();
-    }
-  });
+    main();
 }
