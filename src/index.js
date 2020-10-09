@@ -81,12 +81,13 @@ const myGetData = async (item) => {
         try {
             const cpuUsage = config.plugins['browsertime'].cpuUsage ? config.plugins['browsertime'].cpuUsage : 1
             const { reportDir } = item;
-            const options = { script: path.join(__dirname, './browsertime.sh'),
-                        url: url,
-                        reportDir: reportDir,
-                        params: [ cpuUsage ],
-                        callback: myGetFile
-                    }
+            const options = {
+                script: path.join(__dirname, './browsertime.sh'),
+                url: url,
+                reportDir: reportDir,
+                params: [ cpuUsage ],
+                callback: myGetFile
+            }
             data = await garie_plugin.utils.helpers.executeScript(options);
 
             var clear_data = {};
