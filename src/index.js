@@ -129,12 +129,12 @@ const main = async () => {
   return new Promise(async (resolve, reject) => {
     try{
       const {app} = await garie_plugin.init({
-        db_name:'browsertime',
-        getData:myGetData,
-        report_folder_name:'browsertime-results',
-        plugin_name:'browsertime',
+        db_name: 'browsertime',
+        getData: myGetData,
+        report_folder_name: 'browsertime-results',
+        plugin_name: 'browsertime',
         app_root: path.join(__dirname, '..'),
-        config:config,
+        config: config,
         onDemand: true,
       });
       const cpuUsage = config.plugins['browsertime'].cpuUsage ? config.plugins['browsertime'].cpuUsage : 1;
