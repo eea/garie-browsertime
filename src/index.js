@@ -64,7 +64,7 @@ const writeHTMLFile = async (options) => {
 
 const myGetFile = async (options) => {
     options.fileName = 'browsertime.json';
-    console.log(`Path is: reportDir: ${options.reportDir} ; file name: ${options.fileName}`);
+    console.log(`myGetFile params: ${options.reportDir} - ${options.fileName}`);
     const file = await garie_plugin.utils.helpers.getNewestFile(options);
     const jsonData = JSON.parse(file);
 
