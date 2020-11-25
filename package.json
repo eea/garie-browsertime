@@ -17,7 +17,7 @@
         "start": "node ./src/index.js"
     },
     "dependencies": {
-        "garie-plugin": "https://github.com/eea/garie-plugin#feature/118851_webscore_improvements"
+        "garie-plugin": "https://github.com/eea/garie-plugin#0.0.19"
     },
     "devDependencies": {
         "codecov": "^3.0.0",
