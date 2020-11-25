@@ -1,0 +1,19 @@
+{% block head %}
+<head>
+  <meta charset="utf8">
+  <title>Results for Garie Browsertime plugin.</title>
+</head>
+{% endblock %}
+{% block content %}
+<body>
+  <h1>Videos</h1>
+  <div class="container-fluid">
+    {% for video in videos %}
+    <video width="320" height="240" controls>
+      <source src="{{ video }}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    {% endfor %}
+  </div>
+</body>
+{% endblock %}
