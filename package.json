@@ -17,13 +17,13 @@
         "start": "node ./src/index.js"
     },
     "dependencies": {
-        "garie-plugin": "https://github.com/eea/garie-plugin#0.0.34"
+        "garie-plugin": "https://github.com/eea/garie-plugin#0.0.35"
     },
     "devDependencies": {
         "codecov": "^3.0.0",
         "jest": "^23.5.0",
+        "nunjucks": "^3.2.0",
         "prettier": "1.13.7",
-        "supertest": "^3.3.0",
-        "nunjucks": "^3.2.0"
+        "supertest": "^3.3.0"
     }
 }
