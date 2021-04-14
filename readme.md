@@ -103,3 +103,4 @@ Limiting CPU usage is done by setting the value of `cpuUsage` in the config.json
 }
 
 For more information please go to the [garie-plugin](https://github.com/eea/garie-plugin) repo.
+
