@@ -83,6 +83,7 @@ On start garie-browsertime will start to gather performance metrics for the webs
 | `plugins.browsertime.MAX_AGE_OF_REPORT_VIDEOS`   | `number` (optional, default 100) | Maximum age (in days) of report videos that can be deleted. |
 | `urls`   | `object` (required) | Config for browsertime. More detail below |
 
+
 **urls object**
 
 | Property | Type                | Description                         |
