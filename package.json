@@ -1,6 +1,6 @@
 {
     "name": "garie-browertime",
-    "version": "1.3.13",
+    "version": "1.3.14",
     "description": "Browertime image for performance metrics",
     "license": "MIT",
     "repository": "eeacms/garie-browsertime",
