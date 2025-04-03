@@ -6,22 +6,8 @@ if [ -n "$CONFIG" ]; then
 	echo "Found configuration variable, will write it to the /usr/src/garie-plugin/config.json"
 	echo "$CONFIG" > /usr/src/garie-plugin/config.json
 fi
+
 export DBUS_SESSION_BUS_ADDRESS=/dev/null
-
-# All browsers do not exist in all architectures.
-if [[ `which google-chrome` ]]; then
-   google-chrome --version
-elif [[ `which chromium-browser` ]]; then
-   chromium-browser --version
-fi
-
-if [[ `which firefox` ]]; then
-   firefox --version
-fi
-
-if [[ `which microsoft-edge` ]]; then
-   microsoft-edge --version
-fi
 
 BROWSERTIME_RECORD=/usr/src/app/bin/browsertimeWebPageReplay.js
 BROWSERTIME=/usr/src/app/bin/browsertime.js
@@ -41,13 +27,11 @@ useradd --non-unique --uid $WORKDIR_UID --gid $WORKDIR_GID --home-dir /tmp brows
 
 # Here's a hack for fixing the problem with Chrome not starting in time
 # See https://github.com/SeleniumHQ/docker-selenium/issues/87#issuecomment-250475864
-function chromeSetup() {
-  sudo rm -f /var/lib/dbus/machine-id
-  sudo mkdir -p /var/run/dbus
-  sudo service dbus restart > /dev/null
-  service dbus status > /dev/null
-  export $(dbus-launch)
-  export NSS_USE_SHARED_DB=ENABLED
-}
-chromeSetup()
+sudo rm -f /var/lib/dbus/machine-id
+sudo mkdir -p /var/run/dbus
+sudo service dbus restart > /dev/null
+service dbus status > /dev/null
+export $(dbus-launch)
+export NSS_USE_SHARED_DB=ENABLED
+
 exec "$@"

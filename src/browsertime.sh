@@ -2,16 +2,17 @@
 set -e
 echo "Start getting data"
 REPORTDIR=/usr/src/garie-plugin/reports
+
 # docker_id=$( cat /proc/self/cgroup | grep :memory: | sed  's#.*/\([0-9a-fA-F]*\)$#\1#' )
 
 # REPORTDIR=$(docker inspect $docker_id | grep :/usr/src/garie-plugin/reports | awk -F'["|:]' '{print $2}')
 
-# if [[ $2 =~ "on-demand" ]]
-# then
-#     REPORTDIR="$REPORTDIR/on-demand/"
-# fi
+if [[ $2 =~ "on-demand" ]] 
+then
+    REPORTDIR="$REPORTDIR/on-demand/"
+fi
 
-# mkdir -p $REPORTDIR
+mkdir -p $REPORTDIR
 
 echo "Saving reports into $REPORTDIR"
 
