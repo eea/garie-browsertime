@@ -24,7 +24,7 @@ unique_int=$((0x${hash:0:8}))  # Convert the first 8 characters of the hash (hex
 # Map the unique integer to a display number and remote debugging port
 display_number=$((1000 + unique_int % 1000))  # Map the hash to a display number (between 1000-1999)
 
-/usr/src/app/bin/browsertime.js --xvfbParams.display $display_number $1
+timeout 1800 /usr/src/app/bin/browsertime.js --xvfbParams.display $display_number $1
 
 echo "Finished getting data for: $1"
 
