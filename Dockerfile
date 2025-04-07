@@ -1,4 +1,4 @@
-FROM sitespeedio/browsertime
+FROM sitespeedio/browsertime:24.5.2
 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs git
